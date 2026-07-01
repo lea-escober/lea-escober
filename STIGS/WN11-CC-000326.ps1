@@ -43,3 +43,7 @@ New-ItemProperty `
     -Force | Out-Null
 
 Write-Host "PowerShell Script Block Logging has been enabled."
+
+# To Verify
+Get-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\PowerShell\ScriptBlockLogging" |
+    Select-Object EnableScriptBlockLogging
