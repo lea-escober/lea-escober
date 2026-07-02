@@ -55,3 +55,8 @@ New-ItemProperty `
 
 Write-Host "Virtualization-Based Security has been configured with Secure Boot requirement."
 Write-Host "Restart the computer for the setting to fully apply."
+
+
+# Verify after Reboot
+Get-CimInstance -ClassName Win32_DeviceGuard -Namespace root\Microsoft\Windows\DeviceGuard |
+    Select-Object RequiredSecurityProperties, VirtualizationBasedSecurityStatus
