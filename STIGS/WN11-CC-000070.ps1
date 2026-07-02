@@ -1,7 +1,8 @@
 <#
 .SYNOPSIS
-    This PowerShell script ensures that Windows 11 must be configured to enable Remote host allows delegation of non-exportable credentials.
-
+    This PowerShell script ensures that Virtualization-based Security must be enabled on Windows 11 
+    with the platform security level configured to Secure Boot or Secure Boot with DMA Protection.
+    
 .NOTES
     Author          : Lea Angeline C. Escober
     LinkedIn        : linkedin.com/in/lea-escober/
