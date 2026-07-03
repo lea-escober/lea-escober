@@ -28,34 +28,31 @@
 
 ____
 
-# Configure Virtualization-Based Security (VBS)
+# Enable required Windows features for VBS
+Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Hyper-V-Hypervisor -All -NoRestart
+Enable-WindowsOptionalFeature -Online -FeatureName IsolatedUserMode -All -NoRestart
+Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Hyper-V-All -All -NoRestart
+
+# Configure VBS policy
 $RegistryPath = "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DeviceGuard"
 
-# Create registry path if missing
 if (-not (Test-Path $RegistryPath)) {
     New-Item -Path $RegistryPath -Force | Out-Null
 }
 
-# Enable VBS
-New-ItemProperty `
-    -Path $RegistryPath `
-    -Name "EnableVirtualizationBasedSecurity" `
-    -Value 1 `
-    -PropertyType DWord `
-    -Force | Out-Null
+New-ItemProperty -Path $RegistryPath -Name "EnableVirtualizationBasedSecurity" -Value 1 -PropertyType DWord -Force | Out-Null
 
-# Require platform security features
 # 1 = Secure Boot only
-# 3 = Secure Boot and DMA Protection
-New-ItemProperty `
-    -Path $RegistryPath `
-    -Name "RequirePlatformSecurityFeatures" `
-    -Value 1 `
-    -PropertyType DWord `
-    -Force | Out-Null
+# 3 = Secure Boot + DMA Protection
+New-ItemProperty -Path $RegistryPath -Name "RequirePlatformSecurityFeatures" -Value 1 -PropertyType DWord -Force | Out-Null
 
-Write-Host "Virtualization-Based Security has been configured with Secure Boot requirement."
-Write-Host "Restart the computer for the setting to fully apply."
+# Optional but commonly required for Credential Guard
+New-ItemProperty -Path $RegistryPath -Name "LsaCfgFlags" -Value 1 -PropertyType DWord -Force | Out-Null
+
+# Make sure hypervisor launches at boot
+bcdedit /set hypervisorlaunchtype auto
+
+Write-Host "VBS configuration applied. Reboot the computer, then run the verification command."
 
 
 # Verify after Reboot
